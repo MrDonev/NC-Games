@@ -1,20 +1,30 @@
 const express = require('express');
 const { getAllCategories } = require('./controllers/categories.controller');
-const app=express();
+const { getReviewById } = require('./controllers/reviews.controller');
+const app = express();
 
 app.use(express.json());
 
-app.get('/api/categories',getAllCategories)
+app.get('/api/categories', getAllCategories);
+app.get('/api/reviews/:review_id', getReviewById);
 
-app.all('/api/*',(req,res)=>{
-    res.status(404).send({msg: 'Not found'})
-})
-app.use((err,req,res,next)=>{
-   res.status(err.status).send({msg: err.msg })
-})
+app.all('/api/*', (req, res) => {
+  res.status(404).send({ msg: 'Not found' });
+});
+app.use((err, req, res, next) => {
+  if (err.code === '22P02') {
+    res.status(400).send({ msg: 'Bad Request' });
+  }else {
+      next(err)
+  }
+});
 
-app.use((err, req, res, next)=>{
-    res.status(500).send({msg: 'Internal Server Error!'})
-})
+app.use((err, req, res, next) => {
+  res.status(err.status).send({ msg: err.msg });
+});
 
-module.exports=app;
+app.use((err, req, res, next) => {
+  res.status(500).send({ msg: 'Internal Server Error!' });
+});
+
+module.exports = app;
