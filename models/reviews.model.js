@@ -1,7 +1,6 @@
 const db = require('../db/connection');
 
 exports.fetchReviewById = (reviewID) => {
-  console.log(`review model`);
   return db
     .query(`SELECT * FROM reviews WHERE review_id=$1`, [reviewID])
     .then((result) => {

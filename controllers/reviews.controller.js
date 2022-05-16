@@ -1,7 +1,6 @@
 const {fetchReviewById}=require('../models/reviews.model')
 
 exports.getReviewById = (req, res, next) => {
-    console.log(`review controller`)
     const reviewID = req.params.review_id;
     fetchReviewById(reviewID).then((reviewObj) => {
       res.status(200).send({ reviewObj });
