@@ -10,3 +10,14 @@ exports.fetchReviewById = (reviewID) => {
       return result.rows[0];
     });
 };
+
+exports.updateReviewById = (reviewId, updateVotes) => {
+  return db
+    .query(
+      `UPDATE reviews SET votes=votes + $1 WHERE review_id=$2 RETURNING *`,
+      [updateVotes, reviewId]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};

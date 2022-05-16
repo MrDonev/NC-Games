@@ -56,7 +56,8 @@ describe('APIs', () => {
               designer: 'Uwe Rosenberg',
               owner: 'mallionaire',
               review_body: 'Farmyard fun!',
-              review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+              review_img_url:
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
               created_at: '2021-01-18T10:00:20.514Z',
               votes: 1,
             })
@@ -77,6 +78,32 @@ describe('APIs', () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe('Bad Request');
+        });
+    });
+  });
+  describe('5. PATCH /api/reviews/:review_id', () => {
+    test.only('status 200 OK, return updated object with the correct amount of votes ', () => {
+      const updateVotes = { inc_votes: 5 };
+      return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(200)
+        .then(({ body }) => {
+          const updatedObj = body.updatedReview;
+          expect(updatedObj).toEqual(
+            expect.objectContaining({
+              review_id: 1,
+              title: 'Agricola',
+              category: 'euro game',
+              designer: 'Uwe Rosenberg',
+              owner: 'mallionaire',
+              review_body: 'Farmyard fun!',
+              review_img_url:
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+              created_at: '2021-01-18T10:00:20.514Z',
+              votes: 6,
+            })
+          );
         });
     });
   });
