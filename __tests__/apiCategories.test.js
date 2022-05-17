@@ -136,7 +136,7 @@ describe('APIs', () => {
           expect(body.msg).toBe('Bad Request');
         });
     });
-    test('status 400 Bad request, empty object or incorrect key', () => {
+    test('status 400 Bad request, empty object', () => {
       const updateVotes = {};
       return request(app)
         .patch('/api/reviews/1')
@@ -146,7 +146,7 @@ describe('APIs', () => {
           expect(body.msg).toBe('Bad Request');
         });
     });
-    test('status 400 Bad request, empty object or incorrect key', () => {
+    test('status 400 Bad request, incorrect key', () => {
       const updateVotes = { votes: 1 };
       return request(app)
         .patch('/api/reviews/1')
