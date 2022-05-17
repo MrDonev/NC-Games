@@ -10,3 +10,21 @@ exports.fetchReviewById = (reviewID) => {
       return result.rows[0];
     });
 };
+
+exports.updateReviewById = (reviewId, updateVotes) => {
+  if(updateVotes===undefined){
+    return Promise.reject({status: 400, msg: 'Bad Request'})
+  }
+  return db
+    .query(
+      `UPDATE reviews SET votes=votes + $1 WHERE review_id=$2 RETURNING *`,
+      [updateVotes, reviewId]
+    )
+    .then((result) => {
+      const updatedObj = result.rows[0];
+      if (!updatedObj) {
+        return Promise.reject({ status: 404, msg: 'Review not found' });
+      }
+      return result.rows[0];
+    });
+};

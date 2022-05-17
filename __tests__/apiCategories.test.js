@@ -56,7 +56,8 @@ describe('APIs', () => {
               designer: 'Uwe Rosenberg',
               owner: 'mallionaire',
               review_body: 'Farmyard fun!',
-              review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+              review_img_url:
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
               created_at: '2021-01-18T10:00:20.514Z',
               votes: 1,
             })
@@ -74,6 +75,82 @@ describe('APIs', () => {
     test('status:400 Bad request, when the input type is not as expected', () => {
       return request(app)
         .get('/api/reviews/abcde')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad Request');
+        });
+    });
+  });
+  describe('5. PATCH /api/reviews/:review_id', () => {
+    test('status 200 OK, return updated object with the correct amount of votes ', () => {
+      const updateVotes = { inc_votes: 5 };
+      return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(200)
+        .then(({ body }) => {
+          const updatedObj = body.updatedReview;
+          expect(updatedObj).toEqual(
+            expect.objectContaining({
+              review_id: 1,
+              title: 'Agricola',
+              category: 'euro game',
+              designer: 'Uwe Rosenberg',
+              owner: 'mallionaire',
+              review_body: 'Farmyard fun!',
+              review_img_url:
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+              created_at: '2021-01-18T10:00:20.514Z',
+              votes: 6,
+            })
+          );
+        });
+    });
+    test('status 404 Not Found, when the path is correct review with that id doesnt exist', () => {
+      const updateVotes = { inc_votes: 5 };
+      return request(app)
+        .patch('/api/reviews/101')
+        .send(updateVotes)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Review not found');
+        });
+    });
+    test('status 400 Bad request, invalid id input type', () => {
+      const updateVotes = { inc_votes: 5 };
+      return request(app)
+        .patch('/api/reviews/abc')
+        .send(updateVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad Request');
+        });
+    });
+    test('status 400 Bad request, invalid inc_votes type', () => {
+      const updateVotes = { inc_votes: 'a' };
+      return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad Request');
+        });
+    });
+    test('status 400 Bad request, empty object', () => {
+      const updateVotes = {};
+      return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad Request');
+        });
+    });
+    test('status 400 Bad request, incorrect key', () => {
+      const updateVotes = { votes: 1 };
+      return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe('Bad Request');
