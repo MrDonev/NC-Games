@@ -7,16 +7,18 @@ exports.getReviewById = (req, res, next) => {
     .then((reviewObj) => {
       res.status(200).send({ reviewObj });
     })
-    .catch((err)=>{
-      console.log(err)
-      next(err)
+    .catch((err) => {
+      console.log(err);
+      next(err);
     });
 };
 
 exports.patchReviewById = (req, res, next) => {
   const reviewId = req.params.review_id;
   const updateVotes = req.body.inc_votes;
-  updateReviewById(reviewId, updateVotes).then((updatedReview) => {
-    res.status(200).send({ updatedReview });
-  }).catch(next)
+  updateReviewById(reviewId, updateVotes)
+    .then((updatedReview) => {
+      res.status(200).send({ updatedReview });
+    })
+    .catch(next);
 };
