@@ -7,13 +7,19 @@ exports.fetchReviewById = (reviewID) => {
       if (result.rows[0] === undefined) {
         return Promise.reject({ status: 404, msg: 'Not found' });
       }
-      return result.rows[0];
+      const reviewById=result.rows[0]
+      const comments= fetchCommentsByReviewId(reviewID)
+     return comments.then((result)=>{
+       reviewById.comment_count=result;
+       return reviewById;
+     })
+     
     });
 };
 
 exports.updateReviewById = (reviewId, updateVotes) => {
-  if(updateVotes===undefined){
-    return Promise.reject({status: 400, msg: 'Bad Request'})
+  if (updateVotes === undefined) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
   }
   return db
     .query(
@@ -26,5 +32,13 @@ exports.updateReviewById = (reviewId, updateVotes) => {
         return Promise.reject({ status: 404, msg: 'Review not found' });
       }
       return result.rows[0];
+    });
+};
+
+const fetchCommentsByReviewId = (id) => {
+  return db
+    .query(`SELECT * FROM comments WHERE review_id=$1`, [id])
+    .then((result) => {
+      return (result.rows.length)
     });
 };
