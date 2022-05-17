@@ -82,7 +82,7 @@ describe('APIs', () => {
     });
   });
   describe('5. PATCH /api/reviews/:review_id', () => {
-    test.only('status 200 OK, return updated object with the correct amount of votes ', () => {
+    test('status 200 OK, return updated object with the correct amount of votes ', () => {
       const updateVotes = { inc_votes: 5 };
       return request(app)
         .patch('/api/reviews/1')
@@ -104,6 +104,36 @@ describe('APIs', () => {
               votes: 6,
             })
           );
+        });
+    });
+    test('status 404 Not Found, when the path is correct review with that id doesnt exist', () => {
+      const updateVotes = { inc_votes: 5 };
+      return request(app)
+        .patch('/api/reviews/101')
+        .send(updateVotes)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Review not found');
+        });
+    });
+    test('status 400 Bad request, invalid id input type', () => {
+      const updateVotes = { inc_votes: 5 };
+      return request(app)
+        .patch('/api/reviews/abc')
+        .send(updateVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad Request');
+        });
+    });
+    test('status 400 Bad request, invalid inc_votes type', () => {
+      const updateVotes = { inc_votes: 'a' };
+      return request(app)
+        .patch('/api/reviews/1')
+        .send(updateVotes)
+        .expect(400)
+        .then(({ body }) => {
+      expect(body.msg).toBe('Bad Request')
         });
     });
   });

@@ -18,6 +18,10 @@ exports.updateReviewById = (reviewId, updateVotes) => {
       [updateVotes, reviewId]
     )
     .then((result) => {
+      const updatedObj = result.rows[0];
+      if (!updatedObj) {
+        return Promise.reject({ status: 404, msg: 'Review not found' });
+      }
       return result.rows[0];
     });
 };
