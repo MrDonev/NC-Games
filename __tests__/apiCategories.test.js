@@ -196,7 +196,6 @@ describe('APIs', () => {
         .then(({ body }) => {
           const { reviewObj } = body;
           expect(reviewObj).toBeInstanceOf(Object);
-          expect(Object.keys(reviewObj)).toHaveLength(10);
           expect(reviewObj).toEqual(
             expect.objectContaining({
               review_id: 1,

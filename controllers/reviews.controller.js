@@ -7,7 +7,10 @@ exports.getReviewById = (req, res, next) => {
     .then((reviewObj) => {
       res.status(200).send({ reviewObj });
     })
-    .catch(next);
+    .catch((err)=>{
+      console.log(err)
+      next(err)
+    });
 };
 
 exports.patchReviewById = (req, res, next) => {

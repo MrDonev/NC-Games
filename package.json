@@ -22,7 +22,7 @@
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
   "dependencies": {
     "express": "^4.18.1",
-    "husky": "^7.0.0",
+    "husky": "^7.0.4",
     "jest": "^27.5.1",
     "jest-extended": "^2.0.0",
     "pg-format": "^1.0.4",
@@ -36,5 +36,6 @@
     "setupFilesAfterEnv": [
       "jest-extended/all"
     ]
-  }
+  },
+  "husky": {}
 }
