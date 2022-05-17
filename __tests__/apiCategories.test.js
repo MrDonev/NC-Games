@@ -35,7 +35,9 @@ describe('APIs', () => {
       return request(app)
         .get('/api/categorie')
         .expect(404)
-        .then(() => {});
+        .then(({ body }) => {
+          expect(body.msg).toBe('Not found');
+        });
     });
   });
   ////
@@ -154,6 +156,35 @@ describe('APIs', () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe('Bad Request');
+        });
+    });
+  });
+  describe('6. GET /api/users', () => {
+    test('status 200 OK, responds with array of users objects', () => {
+      return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body }) => {
+          const { usersArray } = body;
+          expect(usersArray).toBeInstanceOf(Array);
+          expect(usersArray.length).toBe(4);
+          usersArray.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test('status 404 not found if the url is incorrect', () => {
+      return request(app)
+        .get('/api/userss')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Not found');
         });
     });
   });
