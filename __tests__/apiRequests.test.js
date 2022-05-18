@@ -229,31 +229,33 @@ describe('APIs', () => {
         });
     });
   });
-  describe.only('9. /api/reviews/:review_id/comments responds with', () => {
+  describe('9. /api/reviews/:review_id/comments responds with', () => {
     test('status 200 OK , returns an array of comments of the given review_id', () => {
       return request(app)
         .get('/api/reviews/3/comments')
         .expect(200)
         .then(({ body: { commentsArray } }) => {
           expect(commentsArray.length).toBe(3);
-          expect(commentsArray[0]).toEqual(
-            expect.objectContaining({
-              comment_id: 2,
-              body: 'My dog loved this game too!',
-              review_id: 3,
-              author: 'mallionaire',
-              votes: 13,
-              created_at: '2021-01-18T10:09:05.410Z',
-            })
-          );
+          commentsArray.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                body: expect.any(String),
+                review_id: expect.any(Number),
+                author: expect.any(String),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+              })
+            );
+          });
         });
     });
     test('status 200 OK, valid review_id but no comments with that refference', () => {
       return request(app)
         .get('/api/reviews/1/comments')
         .expect(200)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe('No comments with that id');
+        .then(({ body:{commentsArray}}) => {
+         expect(commentsArray.length).toBe(0)
         });
     });
     test('status 404, valid number but not matching any review_id', () => {
