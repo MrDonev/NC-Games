@@ -1,3 +1,4 @@
+const { all } = require('../app');
 const db = require('../db/connection');
 
 exports.fetchReviewById = (reviewID) => {
@@ -29,7 +30,10 @@ exports.updateReviewById = (reviewId, updateVotes) => {
   }
   return db
     .query(
-      `UPDATE reviews SET votes=votes + $1 WHERE review_id=$2 RETURNING *`,
+      `UPDATE reviews 
+      SET votes=votes + $1 
+      WHERE review_id=$2 
+      RETURNING *`,
       [updateVotes, reviewId]
     )
     .then((result) => {
@@ -39,4 +43,42 @@ exports.updateReviewById = (reviewId, updateVotes) => {
       }
       return result.rows[0];
     });
+};
+
+exports.fetchAllReviews = () => {
+  return db
+    .query(
+      `SELECT reviews.*, 
+      COUNT (
+    comments.body
+  ) AS comment_count
+  FROM reviews
+  LEFT JOIN comments
+  ON reviews.review_id=comments.review_id
+  GROUP BY reviews.review_id
+  ORDER BY created_at DESC`
+    )
+    .then(({ rows }) => {
+return rows.map((review) => {
+          delete review.review_body;
+          delete review.designer;
+          review.comment_count = Number(review.comment_count);
+          return review;
+        })
+    });
+// const allReviews = db.query(`SELECT * FROM reviews`)
+// const allComments = db.query(`SELECT * FROM comments`)
+// return Promise.all([allReviews, allComments]).then(([reviewsData, commentsData])=>{
+//     const everyReview=reviewsData.rows;
+//     const everyComment=commentsData.rows;
+//     everyReview.forEach((review)=>{
+//       review.comment_count=0;
+//       everyComment.forEach((comment)=>{
+//         if(comment.review_id===review.review_id){
+//           review.comment_count++;
+//         }
+//       })
+//     })
+//   return everyReview;
+// })
 };

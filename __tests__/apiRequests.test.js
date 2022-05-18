@@ -1,4 +1,5 @@
 const request = require('supertest');
+
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data/index');
@@ -11,7 +12,6 @@ afterAll(() => {
 });
 
 describe('APIs', () => {
-  ////
   describe('3. GET /api/categories', () => {
     test('status:200, responds with an array of categories objects', () => {
       return request(app)
@@ -40,7 +40,6 @@ describe('APIs', () => {
         });
     });
   });
-  ////
   describe('4. GET /api/reviews/:review_id', () => {
     test('status:200 OK, responds with review object with required properties', () => {
       return request(app)
@@ -198,19 +197,36 @@ describe('APIs', () => {
           expect(reviewObj).toBeInstanceOf(Object);
           expect(reviewObj).toEqual(
             expect.objectContaining({
-              review_id: 1,
-              title: 'Agricola',
-              category: 'euro game',
-              designer: 'Uwe Rosenberg',
-              owner: 'mallionaire',
-              review_body: 'Farmyard fun!',
-              review_img_url:
-                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-              created_at: '2021-01-18T10:00:20.514Z',
-              votes: 1,
               comment_count: 0,
             })
           );
+        });
+    });
+  });
+  describe('8. GET /api/reviews responds with reviews array of objects', () => {
+    test(`status 200 OK, responds with reviews array of objects, containing
+    all the required properties, sorted by created_at in descending order`, () => {
+      return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({ body }) => {
+          const {reviewsArr }= body;
+          expect(reviewsArr).toHaveLength(13);
+          expect(reviewsArr).toBeSorted({descending: true})
+          reviewsArr.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                review_id: expect.any(Number),
+                title: expect.any(String),
+                category: expect.any(String),
+                owner: expect.any(String),
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number)
+              })
+            );
+          });
         });
     });
   });
