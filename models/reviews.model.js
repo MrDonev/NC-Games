@@ -90,3 +90,13 @@ exports.fetchReviewCommentsById = (id) => {
     }
   );
 };
+
+exports.addCommentByReviewId=(reviewId, newComment)=>{
+  return db.query(`
+  INSERT INTO comments (body, author, review_id)
+  VALUES ($1, $2, $3)`,[newComment.body, newComment.username, reviewId])
+  .then(({result})=>{
+    console.log(result)
+  })
+  }
+  

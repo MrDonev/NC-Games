@@ -275,4 +275,19 @@ describe('APIs', () => {
         });
     });
   });
+  describe.only('10. POST /api/reviews/:review_id/comments', () => {
+    test('Status 201 Created,responds with the posted comment', () => {
+     const newComment={
+       username: 'Donev',
+       body: 'Lorem ipsum'
+     }
+      return request(app)
+      .post('/api/reviews/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then(({body})=>{
+        console.log(body)
+      })
+    });
+  });
 });
