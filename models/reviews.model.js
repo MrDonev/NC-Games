@@ -48,10 +48,14 @@ exports.updateReviewById = (reviewId, updateVotes) => {
 exports.fetchAllReviews = () => {
   return db
     .query(
-      `SELECT reviews.*, 
-      COUNT (
-    comments.body
-  ) AS comment_count
+      `SELECT reviews.owner,
+      reviews.title,
+      reviews.review_id,
+      reviews.category,
+      reviews.review_img_url,
+      reviews.created_at,
+      reviews.votes,
+      COUNT (comments.body) AS comment_count
   FROM reviews
   LEFT JOIN comments
   ON reviews.review_id=comments.review_id
@@ -59,26 +63,30 @@ exports.fetchAllReviews = () => {
   ORDER BY created_at DESC`
     )
     .then(({ rows }) => {
-return rows.map((review) => {
-          delete review.review_body;
-          delete review.designer;
-          review.comment_count = Number(review.comment_count);
-          return review;
-        })
+      return rows.map((review) => {
+        review.comment_count = Number(review.comment_count);
+        return review;
+      });
     });
-// const allReviews = db.query(`SELECT * FROM reviews`)
-// const allComments = db.query(`SELECT * FROM comments`)
-// return Promise.all([allReviews, allComments]).then(([reviewsData, commentsData])=>{
-//     const everyReview=reviewsData.rows;
-//     const everyComment=commentsData.rows;
-//     everyReview.forEach((review)=>{
-//       review.comment_count=0;
-//       everyComment.forEach((comment)=>{
-//         if(comment.review_id===review.review_id){
-//           review.comment_count++;
-//         }
-//       })
-//     })
-//   return everyReview;
-// })
+};
+
+exports.fetchReviewCommentsById = (id) => {
+  const reviewId = db.query(
+    `SELECT review_id FROM reviews WHERE review_id=$1`,
+    [id]
+  );
+  const commentsById = db.query(`SELECT * FROM comments WHERE review_id=$1`, [
+    id,
+  ]);
+  return Promise.all([reviewId, commentsById]).then(
+    ([reviewData, commentsData]) => {
+      if (reviewData.rows.length > 0 && commentsData.rows.length > 0) {
+        return commentsData.rows;
+      } else if (reviewData.rows.length > 0 && commentsData.rows.length === 0) {
+        return [];
+      } else {
+        return Promise.reject({ status: 404, msg: 'Comments not found' });
+      }
+    }
+  );
 };
