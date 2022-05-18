@@ -213,20 +213,18 @@ describe('APIs', () => {
           const {reviewsArr }= body;
           expect(reviewsArr).toHaveLength(13);
           expect(reviewsArr).toBeSorted({descending: true})
-          reviewsArr.forEach((review) => {
-            expect(review).toEqual(
+            expect(reviewsArr[4]).toEqual(
               expect.objectContaining({
-                review_id: expect.any(Number),
-                title: expect.any(String),
-                category: expect.any(String),
-                owner: expect.any(String),
-                review_img_url: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                comment_count: expect.any(Number)
+                review_id: 3,
+                title: 'Ultimate Werewolf',
+                category: 'social deduction',
+                owner: 'bainesface',
+                review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                created_at: '2021-01-18T10:01:41.251Z',
+                votes: 5,
+                comment_count: 3,
               })
             );
-          });
         });
     });
   });
