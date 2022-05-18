@@ -91,12 +91,19 @@ exports.fetchReviewCommentsById = (id) => {
   );
 };
 
-exports.addCommentByReviewId=(reviewId, newComment)=>{
-  return db.query(`
-  INSERT INTO comments (body, author, review_id)
-  VALUES ($1, $2, $3)`,[newComment.body, newComment.username, reviewId])
-  .then(({result})=>{
-    console.log(result)
-  })
+exports.addCommentByReviewId = (reviewId, newComment) => {
+  if (Object.keys(newComment).length < 2){
+    return Promise.reject({status:400, msg: 'Bad Request'})
   }
-  
+  return db
+    .query(
+      `
+  INSERT INTO comments (body, review_id, author, votes)
+  VALUES ($1, $2, $3,$4)
+  RETURNING *;`,
+      [newComment.body, reviewId, newComment.username, 0]
+    )
+    .then(({ rows }) => {
+     return rows[0];
+    });
+};

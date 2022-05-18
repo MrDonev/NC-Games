@@ -44,5 +44,7 @@ exports.postCommentByReviewId = (req, res, next) => {
   const newComment = req.body;
   const reviewId = req.params.review_id;
 
-  addCommentByReviewId(reviewId, newComment);
+  addCommentByReviewId(reviewId, newComment).then((addedComment) => {
+    res.status(201).send({ addedComment });
+  }).catch(next)
 };

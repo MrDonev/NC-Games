@@ -1,3 +1,4 @@
+const { add } = require('husky');
 const request = require('supertest');
 
 const app = require('../app');
@@ -254,8 +255,8 @@ describe('APIs', () => {
       return request(app)
         .get('/api/reviews/1/comments')
         .expect(200)
-        .then(({ body:{commentsArray}}) => {
-         expect(commentsArray.length).toBe(0)
+        .then(({ body: { commentsArray } }) => {
+          expect(commentsArray.length).toBe(0);
         });
     });
     test('status 404, valid number but not matching any review_id', () => {
@@ -275,18 +276,60 @@ describe('APIs', () => {
         });
     });
   });
-  describe.only('10. POST /api/reviews/:review_id/comments', () => {
+  describe('10. POST /api/reviews/:review_id/comments', () => {
     test('Status 201 Created,responds with the posted comment', () => {
-     const newComment={
-       username: 'Donev',
-       body: 'Lorem ipsum'
-     }
+      const newComment = {
+        username: 'bainesface',
+        body: 'Lorem ipsum',
+      };
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({ body: { addedComment } }) => {
+          expect(addedComment).toEqual(
+            expect.objectContaining({
+              comment_id: 7,
+              body: 'Lorem ipsum',
+              review_id: 1,
+              author: 'bainesface',
+              votes: 0,
+              created_at: expect.any(String),
+            })
+          );
+        });
+    });
+    test('Status 400 Bad request, the comment does not contain both mandatory keys', () => {
+      const newComment = { body: 'Down the rabbit hole' };
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad Request');
+        });
+    });
+    test('Status 404 Not Found, no such review with that id', () => {
+      const newComment = { username: 'bainesface', body: 'Lorem Ipsum' };
+      return request(app)
+        .post('/api/review/1001/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Not found');
+        });
+    });
+    test('Status 404 Not Found, user not in the database ', () => {
+      const newComment = {
+        username: 'Donev',
+        body: 'Am I testing the code or is it testing me',
+      };
       return request(app)
       .post('/api/reviews/1/comments')
       .send(newComment)
-      .expect(201)
-      .then(({body})=>{
-        console.log(body)
+      .expect(404)
+      .then(({body:{msg}})=>{
+        expect(msg).toBe('User not found')
       })
     });
   });
