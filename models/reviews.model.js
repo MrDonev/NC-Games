@@ -66,19 +66,28 @@ return rows.map((review) => {
           return review;
         })
     });
-// const allReviews = db.query(`SELECT * FROM reviews`)
-// const allComments = db.query(`SELECT * FROM comments`)
-// return Promise.all([allReviews, allComments]).then(([reviewsData, commentsData])=>{
-//     const everyReview=reviewsData.rows;
-//     const everyComment=commentsData.rows;
-//     everyReview.forEach((review)=>{
-//       review.comment_count=0;
-//       everyComment.forEach((comment)=>{
-//         if(comment.review_id===review.review_id){
-//           review.comment_count++;
-//         }
-//       })
-//     })
-//   return everyReview;
-// })
 };
+
+exports.fetchReviewCommentsById=(id)=>{
+//  return db.query(`SELECT * FROM comments 
+//  WHERE review_id=$1 
+//  AND $1 <= (SELECT MAX(review_id) FROM comments)`,[id])
+const reviewId= db.query(`SELECT review_id FROM reviews WHERE review_id=$1`,[id])
+const commentsById= db.query(`SELECT * FROM comments WHERE review_id=$1`,[id])
+return Promise.all([reviewId,commentsById]).then(([reviewData, commentsData])=>{
+  if (reviewData.rows.length > 0 && commentsData.rows.length>0){
+    return commentsData.rows;
+  } else if(reviewData.rows.length >0 && commentsData.rows.length===0){
+    return Promise.reject({status:200, msg:'No comments with that id'})
+  } else {
+    return Promise.reject({status:404, msg: 'Comments not found'})
+  }
+})
+// .then((result)=>{
+//   console.log(result.rows)
+//   if(!result.rows.length){
+//     return Promise.reject({status: 404, msg:'Comments not found'})
+//   }
+//   return result.rows;
+// })
+}

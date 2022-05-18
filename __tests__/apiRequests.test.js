@@ -210,21 +210,66 @@ describe('APIs', () => {
         .get('/api/reviews')
         .expect(200)
         .then(({ body }) => {
-          const {reviewsArr }= body;
+          const { reviewsArr } = body;
           expect(reviewsArr).toHaveLength(13);
-          expect(reviewsArr).toBeSorted({descending: true})
-            expect(reviewsArr[4]).toEqual(
-              expect.objectContaining({
-                review_id: 3,
-                title: 'Ultimate Werewolf',
-                category: 'social deduction',
-                owner: 'bainesface',
-                review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-                created_at: '2021-01-18T10:01:41.251Z',
-                votes: 5,
-                comment_count: 3,
-              })
-            );
+          expect(reviewsArr).toBeSorted({ descending: true });
+          expect(reviewsArr[4]).toEqual(
+            expect.objectContaining({
+              review_id: 3,
+              title: 'Ultimate Werewolf',
+              category: 'social deduction',
+              owner: 'bainesface',
+              review_img_url:
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+              created_at: '2021-01-18T10:01:41.251Z',
+              votes: 5,
+              comment_count: 3,
+            })
+          );
+        });
+    });
+  });
+  describe.only('9. /api/reviews/:review_id/comments responds with', () => {
+    test('status 200 OK , returns an array of comments of the given review_id', () => {
+      return request(app)
+        .get('/api/reviews/3/comments')
+        .expect(200)
+        .then(({ body: { commentsArray } }) => {
+          expect(commentsArray.length).toBe(3);
+          expect(commentsArray[0]).toEqual(
+            expect.objectContaining({
+              comment_id: 2,
+              body: 'My dog loved this game too!',
+              review_id: 3,
+              author: 'mallionaire',
+              votes: 13,
+              created_at: '2021-01-18T10:09:05.410Z',
+            })
+          );
+        });
+    });
+    test('status 200 OK, valid review_id but no comments with that refference', () => {
+      return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('No comments with that id');
+        });
+    });
+    test('status 404, valid number but not matching any review_id', () => {
+      return request(app)
+        .get('/api/reviews/1001/comments')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Comments not found');
+        });
+    });
+    test('status 400, invalid type review_id', () => {
+      return request(app)
+        .get('/api/reviews/abcd/comments')
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad Request');
         });
     });
   });
