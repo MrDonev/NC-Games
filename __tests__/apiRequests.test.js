@@ -396,37 +396,37 @@ describe('APIs', () => {
       });
       test('200 but no reviews from that category', () => {
         return request(app)
-        .get(`/api/reviews?category=children's games`)
-        .expect(200)
-        .then(({ body: { reviewsArr } })=>{
-         expect(reviewsArr).toEqual([])
-        })
+          .get(`/api/reviews?category=children's games`)
+          .expect(200)
+          .then(({ body: { reviewsArr } }) => {
+            expect(reviewsArr).toEqual([]);
+          });
       });
-      describe('status 404 / 400', () => {
-        test('404 user enters non-existent category', () => {
-          return request(app)
-            .get('/api/reviews?category=ala-bala')
-            .expect(404)
-            .then(({ body: { msg } }) => {
-              expect(msg).toBe('Category not found');
-            });
-        });
-        test('400 wrong input for sort_by', () => {
-          return request(app)
+    });
+    describe('status 404 / 400', () => {
+      test('404 user enters non-existent category', () => {
+        return request(app)
+          .get('/api/reviews?category=ala-bala')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Category not found');
+          });
+      });
+      test('400 wrong input for sort_by', () => {
+        return request(app)
           .get('/api/reviews?sort_by=nonsense')
           .expect(400)
-          .then(({body:{msg}})=>{
-      expect(msg).toBe('Wrong input')
-          })
-        });
-        test('400 wrong input for order_by', () => {
-          return request(app)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Wrong input');
+          });
+      });
+      test('400 wrong input for order_by', () => {
+        return request(app)
           .get('/api/reviews?order_by=bananas')
           .expect(400)
-          .then(({body:{msg}})=>{
-           expect(msg).toBe('Wrong input')
-          })
-        });
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Wrong input');
+          });
       });
     });
   });
