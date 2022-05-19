@@ -345,4 +345,65 @@ describe('APIs', () => {
         });
     });
   });
+  describe('11. GET /api/reviews (queries)', () => {
+    describe('status 200 OK', () => {
+      test('sort_by query returns status 200 OK and an array of sorted articles by valid column', () => {
+        return request(app)
+          .get(`/api/reviews?sort_by=review_id`)
+          .expect(200)
+          .then(({ body: { reviewsArr } }) => {
+            expect(reviewsArr.length).toBe(13);
+            expect(reviewsArr[0].review_id === 13).toBe(true);
+          });
+      });
+      test('category query returns 200 OK, returns an array of reviews with that category sorted by default ', () => {
+        return request(app)
+          .get('/api/reviews?category=social deduction')
+          .expect(200)
+          .then(({ body: { reviewsArr } }) => {
+            reviewsArr.forEach((review) => {
+              expect(review.category === 'social deduction');
+            });
+          });
+      });
+      test(`order_by query returns 200 OK, returns an array of reviews sorted by created_at and in ASC or DESC order`, () => {
+        return request(app)
+          .get('/api/reviews?order_by=asc')
+          .expect(200)
+          .then(({ body: { reviewsArr } }) => {
+            expect(reviewsArr[0].created_at).toBe('1970-01-10T02:08:38.400Z');
+          });
+      });
+      test('returns valid array if all three queries are chained', () => {
+        return request(app)
+          .get('/api/reviews?category=dexterity&sort_by=review_id&order_by=ASC')
+          .expect(200)
+          .then(({ body: { reviewsArr } }) => {
+            expect(reviewsArr[0]).toEqual(
+              expect.objectContaining({
+                owner: 'philippaclaire9',
+                title: 'Jenga',
+                review_id: 2,
+                category: 'dexterity',
+                review_img_url:
+                  'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                created_at: '2021-01-18T10:01:41.251Z',
+                votes: 5,
+                comment_count: 3,
+              })
+            );
+          });
+      });
+      describe('status 404', () => {
+        test('user enters non-existent category', () => {
+          return request(app)
+            .get('/api/reviews?category=ala-bala')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Category not found');
+            });
+        });
+      });
+    });
+  });
 });

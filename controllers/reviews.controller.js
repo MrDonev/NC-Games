@@ -26,9 +26,12 @@ exports.patchReviewById = (req, res, next) => {
 };
 
 exports.getAllReviews = (req, res, next) => {
-  fetchAllReviews().then((reviewsArr) => {
-    res.status(200).send({ reviewsArr });
-  });
+  const { sort_by, category, order_by } = req.query;
+  fetchAllReviews(category, sort_by, order_by)
+    .then((reviewsArr) => {
+      res.status(200).send({ reviewsArr });
+    })
+    .catch(next);
 };
 
 exports.getReviewCommentsById = (req, res, next) => {
@@ -44,7 +47,9 @@ exports.postCommentByReviewId = (req, res, next) => {
   const newComment = req.body;
   const reviewId = req.params.review_id;
 
-  addCommentByReviewId(reviewId, newComment).then((addedComment) => {
-    res.status(201).send({ addedComment });
-  }).catch(next)
+  addCommentByReviewId(reviewId, newComment)
+    .then((addedComment) => {
+      res.status(201).send({ addedComment });
+    })
+    .catch(next);
 };
