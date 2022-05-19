@@ -1,4 +1,3 @@
-const { add } = require('husky');
 const request = require('supertest');
 
 const app = require('../app');
@@ -309,6 +308,19 @@ describe('APIs', () => {
           expect(msg).toBe('Bad Request');
         });
     });
+    test('Status 400  Bad request, non-numerical review_id', () => {
+      const newComment = {
+        username: 'bainesface',
+        body: 'Lorem ipsum',
+      };
+      return request(app)
+        .post('/api/reviews/abc/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad Request');
+        });
+    });
     test('Status 404 Not Found, no such review with that id', () => {
       const newComment = { username: 'bainesface', body: 'Lorem Ipsum' };
       return request(app)
@@ -325,12 +337,12 @@ describe('APIs', () => {
         body: 'Am I testing the code or is it testing me',
       };
       return request(app)
-      .post('/api/reviews/1/comments')
-      .send(newComment)
-      .expect(404)
-      .then(({body:{msg}})=>{
-        expect(msg).toBe('User not found')
-      })
+        .post('/api/reviews/1/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('User not found');
+        });
     });
   });
 });
