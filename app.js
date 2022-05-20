@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const { getAllCategories } = require('./controllers/categories.controller');
+const { deleteCommentById } = require('./controllers/comments.controller');
 const { CustomErrorHandler, InternalServerErr, InvalidPathErr, PSQLerrorHandler } = require('./controllers/errors.controller');
 const { getReviewById, patchReviewById, getAllReviews, getReviewCommentsById, postCommentByReviewId } = require('./controllers/reviews.controller');
 const { getAllUsers } = require('./controllers/users.controller');
@@ -18,6 +19,7 @@ app.post('/api/reviews/:review_id/comments',postCommentByReviewId)
 
 app.patch('/api/reviews/:review_id',patchReviewById)
 
+app.delete('/api/comments/:comment_id',deleteCommentById)
 app.all('/api/*', InvalidPathErr);
 app.use(PSQLerrorHandler);
 

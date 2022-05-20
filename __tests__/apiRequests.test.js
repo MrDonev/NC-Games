@@ -430,4 +430,34 @@ describe('APIs', () => {
       });
     });
   });
+  describe('12. DELETE /api/comments/:comment_id', () => {
+    describe('responds with status 204 and no content', () => {
+      test('deletes the comment with that id', () => {
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204)
+        .then(({body})=>{
+expect(body).toEqual({})
+        })
+      });
+    });
+    describe('responds with statuses 404/400 if comment_id doesnt exist or wrong input type', () => {
+      test('responds with 400 if id is not a number ', () => {
+        return request(app)
+        .delete('/api/comments/abcde')
+        .expect(400)
+        .then(({body:{msg}})=>{
+          expect(msg).toBe('Wrong input type')
+        })
+      });
+      test('responds with 404 if comment with that id doesnt exist', () => {
+        return request(app)
+        .delete('/api/comments/10001')
+        .expect(404)
+        .then(({body:{msg}})=>{
+          expect(msg).toBe('Comment not found')
+        })
+      });
+    });
+  });
 });
