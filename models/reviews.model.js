@@ -76,7 +76,7 @@ exports.fetchAllReviews = (
   reviews.review_img_url,
   reviews.created_at,
   reviews.votes,
-  COUNT (comments.body) AS comment_count 
+  COUNT (comments.body)::INT AS comment_count 
   FROM reviews
   LEFT JOIN comments 
     ON reviews.review_id=comments.review_id `;
@@ -95,22 +95,22 @@ exports.fetchAllReviews = (
   }
   const tableQuery = db.query(queryStr, queryVals);
   const allCategories = db.query(`SELECT * FROM categories`);
-  return Promise.all([tableQuery, allCategories]).then(
-    ([resultTable, resultCategories]) => {
-      const endpointQuery = resultTable.rows;
-      const categoryCheck = resultCategories.rows.map((obj) => obj.slug);
-      if (endpointQuery.length) {
-        return endpointQuery.map(review=>{
-          review.comment_count=Number(review.comment_count)
-          return review;
-        });
-      } else if (!endpointQuery.length && !categoryCheck.includes(category)) {
+
+  return allCategories
+    .then(({ rows }) => {
+      if (
+        !rows.map((obj) => obj.slug).includes(category) &&
+        category !== undefined
+      ) {
         return Promise.reject({ status: 404, msg: 'Category not found' });
-      } else {
-        return [];
       }
-    }
-  );
+    })
+    .then(() => {
+      return tableQuery
+        .then(({ rows }) => {
+          return rows;
+        })
+    });
 };
 
 exports.fetchReviewCommentsById = (id) => {
@@ -135,7 +135,7 @@ exports.fetchReviewCommentsById = (id) => {
 };
 
 exports.addCommentByReviewId = (reviewId, newComment) => {
-  if (Object.keys(newComment).length < 2) {
+  if (!Object.keys(newComment).includes('username', 'body')) {
     return Promise.reject({ status: 400, msg: 'Bad Request' });
   }
   return db
