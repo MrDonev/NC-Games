@@ -434,40 +434,176 @@ describe('APIs', () => {
     describe('responds with status 204 and no content', () => {
       test('deletes the comment with that id', () => {
         return request(app)
-        .delete('/api/comments/3')
-        .expect(204)
-        .then(({body})=>{
-expect(body).toEqual({})
-        })
+          .delete('/api/comments/3')
+          .expect(204)
+          .then(({ body }) => {
+            expect(body).toEqual({});
+          });
       });
     });
     describe('responds with statuses 404/400 if comment_id doesnt exist or wrong input type', () => {
       test('responds with 400 if id is not a number ', () => {
         return request(app)
-        .delete('/api/comments/abcde')
-        .expect(400)
-        .then(({body:{msg}})=>{
-          expect(msg).toBe('Wrong input type')
-        })
+          .delete('/api/comments/abcde')
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Wrong input type');
+          });
       });
       test('responds with 404 if comment with that id doesnt exist', () => {
         return request(app)
-        .delete('/api/comments/10001')
-        .expect(404)
-        .then(({body:{msg}})=>{
-          expect(msg).toBe('Comment not found')
-        })
+          .delete('/api/comments/10001')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Comment not found');
+          });
       });
     });
   });
   describe('13 GET /api', () => {
     test('status 200 OK , returns JSON object with info', () => {
       return request(app)
-      .get('/api')
-      .expect(200)
-      .then(({body:{data}})=>{
-       expect(data).toBeInstanceOf(Object)
-      })
+        .get('/api')
+        .expect(200)
+        .then(({ body: { data } }) => {
+          expect(data).toBeInstanceOf(Object);
+          expect(data).toEqual({
+            'GET /api': {
+              description:
+                'serves up a json representation of all the available endpoints of the api',
+            },
+            'GET /api/categories': {
+              description: 'serves an array of all categories',
+              queries: [],
+              exampleResponse: {
+                categories: [
+                  {
+                    description:
+                      "Players attempt to uncover each other's hidden role",
+                    slug: 'Social deduction',
+                  },
+                ],
+              },
+            },
+            'GET /api/reviews': {
+              description: 'serves an array of all reviews',
+              queries: ['category', 'sort_by', 'order'],
+              exampleResponse: {
+                reviews: [
+                  {
+                    title: 'One Night Ultimate Werewolf',
+                    designer: 'Akihisa Okui',
+                    owner: 'happyamy2016',
+                    review_img_url:
+                      'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    category: 'hidden-roles',
+                    created_at: 1610964101251,
+                    votes: 5,
+                  },
+                ],
+              },
+            },
+            'GET /api/reviews/:review_id': {
+              description: 'serves a review by the requested id',
+              queries: [],
+              exampleResponse: {
+                reviews: {
+                  title: 'One Night Ultimate Werewolf',
+                  review_id: 3,
+                  designer: 'Akihisa Okui',
+                  owner: 'happyamy2016',
+                  review_img_url:
+                    'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                  category: 'hidden-roles',
+                  created_at: 1610964101251,
+                  comment_count: 3,
+                  votes: 5,
+                },
+              },
+            },
+            'PATCH /api/reviews/:review_id': {
+              description:
+                'increments the votes of the review,accepts an object of the form {inc_votes: newVote}, newVote is a number indication the increment count, responds with the updated review',
+              queries: [],
+              exampleResponse: {
+                reviews: {
+                  title: 'One Night Ultimate Werewolf',
+                  review_id: 3,
+                  designer: 'Akihisa Okui',
+                  owner: 'happyamy2016',
+                  review_img_url:
+                    'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                  category: 'hidden-roles',
+                  created_at: 1610964101251,
+                  comment_count: 3,
+                  votes: 15,
+                },
+              },
+            },
+            'GET /api/reviews/:review_id/comments': {
+              description:
+                'serves an array of comments reffering to that review_id',
+              queries: [],
+              exampleResponse: {
+                comments: [
+                  {
+                    body: 'I loved this game too!',
+                    votes: 16,
+                    author: 'happyamy2016',
+                    review_id: 2,
+                    created_at: 'new Date(1511354163389)',
+                  },
+                  {
+                    body: 'My dog loved this game too!',
+                    votes: 3,
+                    author: 'tickle122',
+                    review_id: 4,
+                    created_at: 'new Date(1610964545410)',
+                  },
+                ],
+              },
+            },
+            'GET /api/users': {
+              description:
+                'responds with an array of users objects, having the following properties: username, name, avatar_url',
+              queries: [],
+              exampleResponse: [
+                {
+                  username: 'tickle122',
+                  name: 'Tom Tickle',
+                  avatar_url:
+                    'https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953',
+                },
+                {
+                  username: 'grumpy19',
+                  name: 'Paul Grump',
+                  avatar_url:
+                    'https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013',
+                },
+              ],
+            },
+            'POST /api/reviews/:review_id/comments': {
+              description:
+                'accepts an object with username and body properties and responds with the posted comment',
+              queries: [],
+              exampleResponse: {
+                comment: {
+                  body: 'Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite',
+                  comment_id: 1,
+                  votes: 10,
+                  author: 'happyamy2016',
+                  review_id: 4,
+                  created_at: 'new Date(1616874588110)',
+                },
+              },
+            },
+            'DELETE /api/comments/:comment_id': {
+              description: 'deletes a comment by id, responds with no content',
+              queries: [],
+              exampleResponse: [],
+            },
+          });
+        });
     });
   });
 });
