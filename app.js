@@ -1,4 +1,5 @@
 const express = require('express');
+const { apiJSON } = require('./controllers/api.controller');
 const app = express();
 const { getAllCategories } = require('./controllers/categories.controller');
 const { deleteCommentById } = require('./controllers/comments.controller');
@@ -20,6 +21,9 @@ app.post('/api/reviews/:review_id/comments',postCommentByReviewId)
 app.patch('/api/reviews/:review_id',patchReviewById)
 
 app.delete('/api/comments/:comment_id',deleteCommentById)
+
+app.get('/api',apiJSON)
+
 app.all('/api/*', InvalidPathErr);
 app.use(PSQLerrorHandler);
 
