@@ -1,4 +1,3 @@
-const { all } = require('../app');
 const db = require('../db/connection');
 
 exports.fetchReviewById = (reviewID) => {
@@ -45,28 +44,72 @@ exports.updateReviewById = (reviewId, updateVotes) => {
     });
 };
 
-exports.fetchAllReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.owner,
-      reviews.title,
-      reviews.review_id,
-      reviews.category,
-      reviews.review_img_url,
-      reviews.created_at,
-      reviews.votes,
-      COUNT (comments.body) AS comment_count
+exports.fetchAllReviews = (
+  category,
+  sort_by = 'created_at',
+  order_By = 'DESC'
+) => {
+  const order_by = order_By.toUpperCase();
+  const availableSortColumns = [
+    'owner',
+    'title',
+    'review_id',
+    'category',
+    'created_at',
+    'votes',
+    'comment_count',
+  ];
+  const availableOrderBy = ['ASC', 'DESC'];
+
+  if (
+    !availableOrderBy.includes(order_by) ||
+    !availableSortColumns.includes(sort_by)
+  ) {
+    return Promise.reject({ status: 400, msg: 'Wrong input' });
+  }
+
+  let queryStr = `SELECT 
+  reviews.owner,
+  reviews.title,
+  reviews.review_id,
+  reviews.category,
+  reviews.review_img_url,
+  reviews.created_at,
+  reviews.votes,
+  COUNT (comments.body)::INT AS comment_count 
   FROM reviews
-  LEFT JOIN comments
-  ON reviews.review_id=comments.review_id
-  GROUP BY reviews.review_id
-  ORDER BY created_at DESC`
-    )
+  LEFT JOIN comments 
+    ON reviews.review_id=comments.review_id `;
+
+  const queryVals = [];
+  if (!category) {
+    queryStr += ` 
+    GROUP BY reviews.review_id
+    ORDER BY ${sort_by} ${order_by}`;
+  } else {
+    queryStr += ` 
+    WHERE reviews.category=$1 
+    GROUP BY reviews.review_id
+    ORDER BY ${sort_by} ${order_by}`;
+    queryVals.push(category);
+  }
+  const tableQuery = db.query(queryStr, queryVals);
+  const allCategories = db.query(`SELECT * FROM categories`);
+
+  return allCategories
     .then(({ rows }) => {
-      return rows.map((review) => {
-        review.comment_count = Number(review.comment_count);
-        return review;
-      });
+      if (
+        !rows.map((obj) => obj.slug).includes(category) &&
+        category !== undefined
+      ) {
+        return Promise.reject({ status: 404, msg: 'Category not found' });
+      }
+    })
+    .then(() => {
+      return tableQuery;
+    })
+    .then(({rows}) => {
+      return rows;
     });
 };
 
@@ -92,8 +135,8 @@ exports.fetchReviewCommentsById = (id) => {
 };
 
 exports.addCommentByReviewId = (reviewId, newComment) => {
-  if (Object.keys(newComment).length < 2){
-    return Promise.reject({status:400, msg: 'Bad Request'})
+  if (!Object.keys(newComment).includes('username', 'body')) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
   }
   return db
     .query(
@@ -104,6 +147,6 @@ exports.addCommentByReviewId = (reviewId, newComment) => {
       [newComment.body, reviewId, newComment.username, 0]
     )
     .then(({ rows }) => {
-     return rows[0];
+      return rows[0];
     });
 };
