@@ -106,10 +106,10 @@ exports.fetchAllReviews = (
       }
     })
     .then(() => {
-      return tableQuery
-        .then(({ rows }) => {
-          return rows;
-        })
+      return tableQuery;
+    })
+    .then(({rows}) => {
+      return rows;
     });
 };
 
