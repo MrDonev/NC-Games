@@ -3,6 +3,7 @@ const {
   fetchAllReviews,
   fetchReviewCommentsById,
   addCommentByReviewId,
+  addNewReview
 } = require('../models/reviews.model');
 const { fetchReviewById } = require('../models/reviews.model');
 
@@ -53,3 +54,10 @@ exports.postCommentByReviewId = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postNewReview=(req,res,next)=>{
+const newReview=req.body;
+addNewReview(newReview).then((addedReview)=>{
+  res.status(201).send({addedReview})
+}).catch(next)
+}

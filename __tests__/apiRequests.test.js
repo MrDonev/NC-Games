@@ -686,4 +686,67 @@ describe('APIs', () => {
         });
     });
   });
+  describe('19. POST /api/reviews/', () => {
+    test('Status 201 Created,responds with the posted comment', () => {
+      const newReview = {
+        title: 'Testing',
+        designer: 'Bai Hui',
+        owner: 'mallionaire',
+        review_img_url:
+          'https://lh3.googleusercontent.com/1wi1PrpfAdi3JJ42nasm7IPQtKB9twRBDsnBCt6aI4jmTPZhw-fUrSbw-i4eT0cXlUhNCYg2MADOdaUV4C50A-OHyQs3PkEds6Whkw=w600',
+        review_body: 'Wow, it actually works',
+        category: 'euro game',
+      }
+      return request(app)
+        .post('/api/reviews/')
+        .send(newReview)
+        .expect(201)
+        .then(({ body: { addedReview } }) => {
+          expect(addedReview).toEqual(
+            expect.objectContaining({
+              review_id:14,
+              title: 'Testing',
+              designer: 'Bai Hui',
+              owner: 'mallionaire',
+              review_img_url:
+                'https://lh3.googleusercontent.com/1wi1PrpfAdi3JJ42nasm7IPQtKB9twRBDsnBCt6aI4jmTPZhw-fUrSbw-i4eT0cXlUhNCYg2MADOdaUV4C50A-OHyQs3PkEds6Whkw=w600',
+              review_body: 'Wow, it actually works',
+              category: 'euro game',
+            })
+          );
+        });
+    });
+    test('Status 400 Bad request, the comment does not contain all mandatory keys', () => {
+      const newReview = {
+        title: 'Testing',
+        designer: 'Zaio Baio',
+        owner: 'Bai Hui',
+      }
+      return request(app)
+        .post('/api/reviews/1/comments')
+        .send(newReview)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad Request');
+        });
+    });
+    test('Status 404 Not Found, user not in the database ', () => {
+      const newReview = {
+        title: 'Testing',
+        designer: 'Bai Hui',
+        owner: 'Gruio',
+        review_img_url:
+          'https://lh3.googleusercontent.com/1wi1PrpfAdi3JJ42nasm7IPQtKB9twRBDsnBCt6aI4jmTPZhw-fUrSbw-i4eT0cXlUhNCYg2MADOdaUV4C50A-OHyQs3PkEds6Whkw=w600',
+        review_body: 'Wow, it actually works',
+        category: 'euro game',
+      }
+      return request(app)
+        .post('/api/reviews')
+        .send(newReview)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('User not found');
+        });
+    });
+  });
 });

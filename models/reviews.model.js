@@ -150,3 +150,20 @@ exports.addCommentByReviewId = (reviewId, newComment) => {
       return rows[0];
     });
 };
+
+exports.addNewReview=(newReview)=>{
+  if (!Object.keys(newReview).includes('title','category','designer','owner','review_body','review_img_url')) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
+  }
+  return db
+    .query(
+      `
+  INSERT INTO reviews (title, category, designer, owner,review_body,review_img_url)
+  VALUES ($1, $2, $3,$4,$5,$6)
+  RETURNING *;`,
+      [newReview.title, newReview.category, newReview.designer, newReview.owner, newReview.review_body, newReview.review_img_url]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+}
