@@ -6,7 +6,7 @@ const { deleteCommentById, patchCommentVotesById } = require('./controllers/comm
 const { CustomErrorHandler, InternalServerErr, InvalidPathErr, PSQLerrorHandler } = require('./controllers/errors.controller');
 const { postNewReview, getReviewById, patchReviewById, getAllReviews, getReviewCommentsById, postCommentByReviewId } = require('./controllers/reviews.controller');
 const { getAllUsers, getUserByUsername } = require('./controllers/users.controller');
-const HOME = require('./home')
+// const HOME = require('./home')
 
 app.use(express.json());
 
@@ -26,7 +26,7 @@ app.patch('/api/comments/:comment_id',patchCommentVotesById)
 
 app.delete('/api/comments/:comment_id',deleteCommentById)
 
-app.get('/',HOME)
+// app.get('/',HOME)
 app.get('/api',apiJSON)
 
 app.all('/api/*', InvalidPathErr);
