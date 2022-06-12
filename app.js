@@ -9,7 +9,7 @@ const { getAllUsers, getUserByUsername } = require('./controllers/users.controll
 const HOME = require('./home')
 
 app.use(express.json());
-app.get('/',HOME)
+
 app.get('/api/categories', getAllCategories);
 app.get('/api/reviews/:review_id', getReviewById);
 app.get('/api/users',getAllUsers)
@@ -26,6 +26,7 @@ app.patch('/api/comments/:comment_id',patchCommentVotesById)
 
 app.delete('/api/comments/:comment_id',deleteCommentById)
 
+app.get('/',HOME)
 app.get('/api',apiJSON)
 
 app.all('/api/*', InvalidPathErr);
