@@ -606,4 +606,21 @@ describe('APIs', () => {
         });
     });
   });
+  describe('17. GET /api/users/:username', () => {
+    test.only('status 200 OK, responds with user object', () => {
+      return request(app)
+        .get('/api/users/bainesface')
+        .expect(200)
+        .then(({ body }) => {
+          const user=body.userObj;
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: 'bainesface',
+                name: 'sarah',
+                avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4',
+              })
+            );
+          });
+    });
+  });
 });
