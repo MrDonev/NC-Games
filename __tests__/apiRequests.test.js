@@ -468,152 +468,166 @@ describe('APIs', () => {
         .then(({ body: { data } }) => {
           expect(data).toBeInstanceOf(Object);
           expect(data).toEqual({
-            "GET /api": {
-              "description": "serves up a json representation of all the available endpoints of the api"
+            'GET /api': {
+              description:
+                'serves up a json representation of all the available endpoints of the api',
             },
-            "GET /api/categories": {
-              "description": "serves an array of all categories",
-              "queries": [],
-              "exampleResponse": {
-                "categories": [
+            'GET /api/categories': {
+              description: 'serves an array of all categories',
+              queries: [],
+              exampleResponse: {
+                categories: [
                   {
-                    "description": "Players attempt to uncover each other's hidden role",
-                    "slug": "Social deduction"
-                  }
-                ]
-              }
+                    description:
+                      "Players attempt to uncover each other's hidden role",
+                    slug: 'Social deduction',
+                  },
+                ],
+              },
             },
-            "GET /api/reviews": {
-              "description": "serves an array of all reviews",
-              "queries": ["category", "sort_by", "order"],
-              "exampleResponse": {
-                "reviews": [
+            'GET /api/reviews': {
+              description: 'serves an array of all reviews',
+              queries: ['category', 'sort_by', 'order'],
+              exampleResponse: {
+                reviews: [
                   {
-                    "title": "One Night Ultimate Werewolf",
-                    "designer": "Akihisa Okui",
-                    "owner": "happyamy2016",
-                    "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-                    "category": "hidden-roles",
-                    "created_at": 1610964101251,
-                    "votes": 5
-                  }
-                ]
-              }
+                    title: 'One Night Ultimate Werewolf',
+                    designer: 'Akihisa Okui',
+                    owner: 'happyamy2016',
+                    review_img_url:
+                      'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    category: 'hidden-roles',
+                    created_at: 1610964101251,
+                    votes: 5,
+                  },
+                ],
+              },
             },
-            "GET /api/reviews/:review_id": {
-              "description": "serves a review by the requested id",
-              "queries": [],
-              "exampleResponse": {
-                "reviews": {
-                  "title": "One Night Ultimate Werewolf",
-                  "review_id": 3,
-                  "designer": "Akihisa Okui",
-                  "owner": "happyamy2016",
-                  "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-                  "category": "hidden-roles",
-                  "created_at": 1610964101251,
-                  "comment_count": 3,
-                  "votes": 5
-                }
-              }
+            'GET /api/reviews/:review_id': {
+              description: 'serves a review by the requested id',
+              queries: [],
+              exampleResponse: {
+                reviews: {
+                  title: 'One Night Ultimate Werewolf',
+                  review_id: 3,
+                  designer: 'Akihisa Okui',
+                  owner: 'happyamy2016',
+                  review_img_url:
+                    'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                  category: 'hidden-roles',
+                  created_at: 1610964101251,
+                  comment_count: 3,
+                  votes: 5,
+                },
+              },
             },
-            "PATCH /api/reviews/:review_id": {
-              "description": "increments the votes of the review,accepts an object of the form {inc_votes: newVote}, newVote is a number indication the increment count, responds with the updated review",
-              "queries": [],
-              "exampleResponse": {
-                "reviews": {
-                  "title": "One Night Ultimate Werewolf",
-                  "review_id": 3,
-                  "designer": "Akihisa Okui",
-                  "owner": "happyamy2016",
-                  "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-                  "category": "hidden-roles",
-                  "created_at": 1610964101251,
-                  "comment_count": 3,
-                  "votes": 15
-                }
-              }
+            'PATCH /api/reviews/:review_id': {
+              description:
+                'increments the votes of the review,accepts an object of the form {inc_votes: newVote}, newVote is a number indication the increment count, responds with the updated review',
+              queries: [],
+              exampleResponse: {
+                reviews: {
+                  title: 'One Night Ultimate Werewolf',
+                  review_id: 3,
+                  designer: 'Akihisa Okui',
+                  owner: 'happyamy2016',
+                  review_img_url:
+                    'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                  category: 'hidden-roles',
+                  created_at: 1610964101251,
+                  comment_count: 3,
+                  votes: 15,
+                },
+              },
             },
-            "GET /api/reviews/:review_id/comments": {
-              "description": "serves an array of comments reffering to that review_id",
-              "queries": [],
-              "exampleResponse": {
-                "comments": [
+            'GET /api/reviews/:review_id/comments': {
+              description:
+                'serves an array of comments reffering to that review_id',
+              queries: [],
+              exampleResponse: {
+                comments: [
                   {
-                    "body": "I loved this game too!",
-                    "votes": 16,
-                    "author": "happyamy2016",
-                    "review_id": 2,
-                    "created_at": "new Date(1511354163389)"
+                    body: 'I loved this game too!',
+                    votes: 16,
+                    author: 'happyamy2016',
+                    review_id: 2,
+                    created_at: 'new Date(1511354163389)',
                   },
                   {
-                    "body": "My dog loved this game too!",
-                    "votes": 3,
-                    "author": "tickle122",
-                    "review_id": 4,
-                    "created_at": "new Date(1610964545410)"
-                  }
-                ]
-              }
+                    body: 'My dog loved this game too!',
+                    votes: 3,
+                    author: 'tickle122',
+                    review_id: 4,
+                    created_at: 'new Date(1610964545410)',
+                  },
+                ],
+              },
             },
-            "GET /api/users": {
-              "description": "responds with an array of users objects, having the following properties: username, name, avatar_url",
-              "queries": [],
-              "exampleResponse": [
+            'GET /api/users': {
+              description:
+                'responds with an array of users objects, having the following properties: username, name, avatar_url',
+              queries: [],
+              exampleResponse: [
                 {
-                  "username": "tickle122",
-                  "name": "Tom Tickle",
-                  "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+                  username: 'tickle122',
+                  name: 'Tom Tickle',
+                  avatar_url:
+                    'https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953',
                 },
                 {
-                  "username": "grumpy19",
-                  "name": "Paul Grump",
-                  "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
-                }
-              ]
+                  username: 'grumpy19',
+                  name: 'Paul Grump',
+                  avatar_url:
+                    'https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013',
+                },
+              ],
             },
-            "GET /api/users/:user": {
-              "description": "responds with an user object, having the following properties: username, name, avatar_url",
-              "queries": [],
-              "exampleResponse": {
-                "username": "tickle122",
-                "name": "Tom Tickle",
-                "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
-              }
+            'GET /api/users/:user': {
+              description:
+                'responds with an user object, having the following properties: username, name, avatar_url',
+              queries: [],
+              exampleResponse: {
+                username: 'tickle122',
+                name: 'Tom Tickle',
+                avatar_url:
+                  'https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953',
+              },
             },
-            "POST /api/reviews/:review_id/comments": {
-              "description": "accepts an object with username and body properties and responds with the posted comment",
-              "queries": [],
-              "exampleResponse": {
-                "comment": {
-                  "body": "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
-                  "comment_id": 1,
-                  "votes": 10,
-                  "author": "happyamy2016",
-                  "review_id": 4,
-                  "created_at": "new Date(1616874588110)"
-                }
-              }
+            'POST /api/reviews/:review_id/comments': {
+              description:
+                'accepts an object with username and body properties and responds with the posted comment',
+              queries: [],
+              exampleResponse: {
+                comment: {
+                  body: 'Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite',
+                  comment_id: 1,
+                  votes: 10,
+                  author: 'happyamy2016',
+                  review_id: 4,
+                  created_at: 'new Date(1616874588110)',
+                },
+              },
             },
-            "PATCH /api/reviews/:review_id/comments": {
-              "description": "accepts an object with {inc_votes} and responds with the posted comment",
-              "queries": [],
-              "exampleResponse": {
-                "comment": {
-                  "body": "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
-                  "comment_id": 1,
-                  "votes": 11,
-                  "author": "happyamy2016",
-                  "review_id": 4,
-                  "created_at": "new Date(1616874588110)"
-                }
-              }
+            'PATCH /api/reviews/:review_id/comments': {
+              description:
+                'accepts an object with {inc_votes} and responds with the posted comment',
+              queries: [],
+              exampleResponse: {
+                comment: {
+                  body: 'Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite',
+                  comment_id: 1,
+                  votes: 11,
+                  author: 'happyamy2016',
+                  review_id: 4,
+                  created_at: 'new Date(1616874588110)',
+                },
+              },
             },
-            "DELETE /api/comments/:comment_id": {
-              "description": "deletes a comment by id, responds with no content",
-              "queries": [],
-              "exampleResponse": []
-            }
+            'DELETE /api/comments/:comment_id': {
+              description: 'deletes a comment by id, responds with no content',
+              queries: [],
+              exampleResponse: [],
+            },
           });
         });
     });
@@ -696,7 +710,7 @@ describe('APIs', () => {
           'https://lh3.googleusercontent.com/1wi1PrpfAdi3JJ42nasm7IPQtKB9twRBDsnBCt6aI4jmTPZhw-fUrSbw-i4eT0cXlUhNCYg2MADOdaUV4C50A-OHyQs3PkEds6Whkw=w600',
         review_body: 'Wow, it actually works',
         category: 'euro game',
-      }
+      };
       return request(app)
         .post('/api/reviews/')
         .send(newReview)
@@ -704,7 +718,7 @@ describe('APIs', () => {
         .then(({ body: { addedReview } }) => {
           expect(addedReview).toEqual(
             expect.objectContaining({
-              review_id:14,
+              review_id: 14,
               title: 'Testing',
               designer: 'Bai Hui',
               owner: 'mallionaire',
@@ -721,7 +735,7 @@ describe('APIs', () => {
         title: 'Testing',
         designer: 'Zaio Baio',
         owner: 'Bai Hui',
-      }
+      };
       return request(app)
         .post('/api/reviews/1/comments')
         .send(newReview)
@@ -739,13 +753,56 @@ describe('APIs', () => {
           'https://lh3.googleusercontent.com/1wi1PrpfAdi3JJ42nasm7IPQtKB9twRBDsnBCt6aI4jmTPZhw-fUrSbw-i4eT0cXlUhNCYg2MADOdaUV4C50A-OHyQs3PkEds6Whkw=w600',
         review_body: 'Wow, it actually works',
         category: 'euro game',
-      }
+      };
       return request(app)
         .post('/api/reviews')
         .send(newReview)
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe('User not found');
+        });
+    });
+  });
+  describe('22. POST /api/categories/', () => {
+    test('responds with status 201 and a body of the newly created topic', () => {
+      const newCategory = {
+        slug: 'Hyperrealistic shooter',
+        description: 'VR mega realistic shooter',
+      };
+      return request(app)
+        .post('/api/categories')
+        .send(newCategory)
+        .expect(201)
+        .then(({ body: { addedCategory } }) => {
+          expect(addedCategory).toEqual(
+            expect.objectContaining({
+              slug: 'Hyperrealistic shooter',
+              description: 'VR mega realistic shooter',
+            })
+          );
+        });
+    });
+    test('responds with status 400 bad request if object doesnt contain the required key-values', () => {
+      const newCategory = {
+        body: 'Hyperrealistic shooter',
+        id: 'VR mega realistic shooter',
+      };
+      return request(app)
+        .post('/api/categories')
+        .send(newCategory)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad Request');
+        });
+    });
+    test('responds with status 400 bad request if input is invalid format', () => {
+      const newCategory = `slug: euro-games, description: test`;
+      return request(app)
+        .post('/api/categories')
+        .send(newCategory)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad Request');
         });
     });
   });

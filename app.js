@@ -1,7 +1,7 @@
 const express = require('express');
 const { apiJSON } = require('./controllers/api.controller');
 const app = express();
-const { getAllCategories } = require('./controllers/categories.controller');
+const { getAllCategories,postNewCategory } = require('./controllers/categories.controller');
 const { deleteCommentById, patchCommentVotesById } = require('./controllers/comments.controller');
 const { CustomErrorHandler, InternalServerErr, InvalidPathErr, PSQLerrorHandler } = require('./controllers/errors.controller');
 const { postNewReview, getReviewById, patchReviewById, getAllReviews, getReviewCommentsById, postCommentByReviewId } = require('./controllers/reviews.controller');
@@ -19,6 +19,7 @@ app.get('/api/users/:username',getUserByUsername)
 
 app.post('/api/reviews/:review_id/comments',postCommentByReviewId)
 app.post('/api/reviews',postNewReview)
+app.post('/api/categories',postNewCategory)
 
 app.patch('/api/reviews/:review_id',patchReviewById)
 app.patch('/api/comments/:comment_id',patchCommentVotesById)
