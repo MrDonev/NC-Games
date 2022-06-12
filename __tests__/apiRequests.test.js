@@ -607,7 +607,7 @@ describe('APIs', () => {
     });
   });
   describe('17. GET /api/users/:username', () => {
-    test.only('status 200 OK, responds with user object', () => {
+    test('status 200 OK, responds with user object', () => {
       return request(app)
         .get('/api/users/bainesface')
         .expect(200)
@@ -620,6 +620,14 @@ describe('APIs', () => {
                 avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4',
               })
             );
+          });
+    });
+    test('status 404 Not Found if the user doesnt exist in the DB', () => {
+      return request(app)
+        .get('/api/users/BruceAlmighty')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('User not found')
           });
     });
   });
