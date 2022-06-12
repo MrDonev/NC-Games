@@ -19,3 +19,24 @@ exports.removeCommentById = (commentId) => {
       return rows;
     });
 };
+
+exports.changeCommentVotesById = (updatedVotes, commentId) => {
+  if (updatedVotes === undefined) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
+  }
+  return db
+    .query(
+      `UPDATE comments 
+        SET votes=votes + $1 
+        WHERE comment_id=$2 
+        RETURNING *`,
+      [updatedVotes, commentId]
+    )
+    .then((result) => {
+      const updatedObj = result.rows[0];
+      if (!updatedObj) {
+        return Promise.reject({ status: 404, msg: 'Comment not found' });
+      }
+      return result.rows[0];
+    });
+};

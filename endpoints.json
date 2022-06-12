@@ -126,6 +126,20 @@
       }
     }
   },
+  "PATCH /api/reviews/:review_id/comments": {
+    "description": "accepts an object with {inc_votes} and responds with the posted comment",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "body": "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
+        "comment_id": 1,
+        "votes": 11,
+        "author": "happyamy2016",
+        "review_id": 4,
+        "created_at": "new Date(1616874588110)"
+      }
+    }
+  },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by id, responds with no content",
     "queries": [],
