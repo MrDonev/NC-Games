@@ -806,4 +806,30 @@ describe('APIs', () => {
         });
     });
   });
+  describe('23. DELETE /api/reviews/:review_id', () => {
+    test('Responds with status 204 and no content', () => {
+      return request(app)
+        .delete('/api/reviews/2')
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+        });
+    });
+    test('responds with 400 if id is not a number ', () => {
+      return request(app)
+        .delete('/api/reviews/abcde')
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Wrong input type');
+        });
+    });
+    test('responds with 404 if comment with that id doesnt exist', () => {
+      return request(app)
+        .delete('/api/reviews/10001')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Review not found');
+        });
+    });
+  });
 });

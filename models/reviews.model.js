@@ -108,7 +108,7 @@ exports.fetchAllReviews = (
     .then(() => {
       return tableQuery;
     })
-    .then(({rows}) => {
+    .then(({ rows }) => {
       return rows;
     });
 };
@@ -151,8 +151,17 @@ exports.addCommentByReviewId = (reviewId, newComment) => {
     });
 };
 
-exports.addNewReview=(newReview)=>{
-  if (!Object.keys(newReview).includes('title','category','designer','owner','review_body','review_img_url')) {
+exports.addNewReview = (newReview) => {
+  if (
+    !Object.keys(newReview).includes(
+      'title',
+      'category',
+      'designer',
+      'owner',
+      'review_body',
+      'review_img_url'
+    )
+  ) {
     return Promise.reject({ status: 400, msg: 'Bad Request' });
   }
   return db
@@ -161,9 +170,39 @@ exports.addNewReview=(newReview)=>{
   INSERT INTO reviews (title, category, designer, owner,review_body,review_img_url)
   VALUES ($1, $2, $3,$4,$5,$6)
   RETURNING *;`,
-      [newReview.title, newReview.category, newReview.designer, newReview.owner, newReview.review_body, newReview.review_img_url]
+      [
+        newReview.title,
+        newReview.category,
+        newReview.designer,
+        newReview.owner,
+        newReview.review_body,
+        newReview.review_img_url,
+      ]
     )
     .then(({ rows }) => {
       return rows[0];
     });
-}
+};
+
+exports.removeReviewById = (reviewId) => {
+  if (isNaN(reviewId)) {
+    return Promise.reject({ status: 400, msg: 'Wrong input type' });
+  }
+  reviewId = Number(reviewId);
+  return db
+    .query(`SELECT review_id FROM reviews`)
+    .then(({ rows }) => {
+      if (!rows.map((review) => review.review_id).includes(reviewId)) {
+        return Promise.reject({ status: 404, msg: 'Review not found' });
+      }
+    })
+    .then(() => {
+      return db.query(`DELETE FROM comments WHERE review_id=$1`, [reviewId]);
+    })
+    .then(() => {
+      return db.query(`DELETE FROM reviews WHERE review_id=$1`, [reviewId]);
+    })
+    .then(({ rows }) => {
+      return rows;
+    });
+};
