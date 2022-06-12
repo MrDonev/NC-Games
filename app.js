@@ -6,10 +6,10 @@ const { deleteCommentById, patchCommentVotesById } = require('./controllers/comm
 const { CustomErrorHandler, InternalServerErr, InvalidPathErr, PSQLerrorHandler } = require('./controllers/errors.controller');
 const { postNewReview, getReviewById, patchReviewById, getAllReviews, getReviewCommentsById, postCommentByReviewId } = require('./controllers/reviews.controller');
 const { getAllUsers, getUserByUsername } = require('./controllers/users.controller');
-
+const HOME = require('./home')
 
 app.use(express.json());
-
+app.get('/',HOME)
 app.get('/api/categories', getAllCategories);
 app.get('/api/reviews/:review_id', getReviewById);
 app.get('/api/users',getAllUsers)
