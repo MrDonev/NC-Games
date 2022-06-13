@@ -28,8 +28,8 @@ const {
   getAllUsers,
   getUserByUsername,
 } = require('./controllers/users.controller');
-
-app.use(corse())
+const cors= require('cors')
+app.use(cors())
 app.use(express.json());
 
 app.get('/api/categories', getAllCategories);
